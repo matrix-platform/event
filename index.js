@@ -93,6 +93,6 @@
         clients[id] = client;
     });
 
-    server.listen(8000);
+    server.listen(config.port);
 
 }());
