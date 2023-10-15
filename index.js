@@ -26,6 +26,16 @@
         return who;
     }
 
+    function notify(who, content) {
+        let list = clients[who];
+
+        if (Array.isArray(list)) {
+            list.forEach(function (client) {
+                client.emit(`:${content.type}`, content);
+            });
+        }
+    }
+
     function remove(who, client) {
         let list = clients[who];
 
@@ -40,14 +50,20 @@
         }
     }
 
-    app.get("/notify", function (request, response) {
-        let list = clients[request.query.id];
+    app.get("/broadcast", function (request, response) {
+        const exclude = request.query.exclude?.split(",");
 
-        if (list) {
-            list.forEach(function (client) {
-                client.emit(`:${request.query.type}`, request.query);
-            });
-        }
+        Object.keys(clients).forEach((id) => {
+            if (!exclude || !exclude.includes(id)) {
+                notify(id, request.query);
+            }
+        });
+
+        response.send("");
+    });
+
+    app.get("/notify", function (request, response) {
+        notify(request.query.id, request.query);
 
         response.send("");
     });
