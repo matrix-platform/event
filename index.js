@@ -87,9 +87,9 @@
         });
 
         client.on(":bind", function (data) {
-            let tokens = data.token.split("-");
+            let tokens = data.token?.split("-");
 
-            if (tokens.length === 3 && Date.now() < tokens[1]) {
+            if (tokens?.length === 3 && Date.now() < tokens[1]) {
                 let sha256 = crypto.createHash("sha256");
 
                 sha256.update(`${tokens[0]}:${tokens[1]}:${config.secret}`);
